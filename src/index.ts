@@ -1,5 +1,5 @@
 import { Gobang } from "./Gobang";
-import { StatusBar } from "./StatusBar";
+import { StatusBar, RendererOption } from "./StatusBar";
 import { CanvasRenderer } from "./CanvasRenderer";
 import { DOMRenderer } from "./DOMRenderer";
 import { Renderer } from "./Renderer";
@@ -11,16 +11,33 @@ const gobang = new Gobang({
 });
 const container = document.getElementsByTagName("body")[0];
 
-new StatusBar({ container, gobang });
-
 let renderer: Renderer;
 
-if (CanvasRenderer.isSupported()) {
-  renderer = new CanvasRenderer({ container, gobang });
-} else {
-  renderer = new DOMRenderer({ container, gobang });
-}
+new StatusBar({
+  container,
+  gobang,
+  onRendererChange(option: RendererOption) {
+    renderer.teardown();
+    createRenderer(option);
+  }
+});
+
+createRenderer(RendererOption.Canvas);
 
 gobang.subscribe((cell: Cell, prevStatus: CellStatus) => {
   renderer.handleUpdate(cell, prevStatus);
 });
+
+function createRenderer(option: RendererOption) {
+  switch (option) {
+    case RendererOption.Canvas:
+      if (CanvasRenderer.isSupported()) {
+        renderer = new CanvasRenderer({ container, gobang });
+        break;
+      }
+
+    case RendererOption.DOM:
+      renderer = new DOMRenderer({ container, gobang });
+      break;
+  }
+}
