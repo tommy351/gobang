@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack",
-    "dev": "cross-env NODE_ENV=development webpack-dev-server"
+    "start": "cross-env NODE_ENV=development webpack-dev-server"
   },
   "dependencies": {
     "cross-env": "^5.1.3",
