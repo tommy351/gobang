@@ -39,8 +39,8 @@ export class CanvasRenderer implements Renderer {
   }
 
   private handleClick = (e: MouseEvent) => {
-    const x = Math.floor((e.clientX - this.root.offsetLeft) / CELL_SIZE);
-    const y = Math.floor((e.clientY - this.root.offsetTop) / CELL_SIZE);
+    const x = Math.floor((e.pageX - this.root.offsetLeft) / CELL_SIZE);
+    const y = Math.floor((e.pageY - this.root.offsetTop) / CELL_SIZE);
 
     this.gobang.updateCell(x, y);
   };
