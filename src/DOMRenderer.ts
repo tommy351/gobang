@@ -1,5 +1,5 @@
 import { Renderer } from "./Renderer";
-import { Gobang, DisposeFunction } from "./Gobang";
+import { Gobang } from "./Gobang";
 import { CellStatus, Cell, CellMatrix } from "./Cell";
 import * as styles from "./DOMRenderer.css";
 
@@ -13,7 +13,6 @@ export class DOMRenderer implements Renderer {
   private readonly root: HTMLElement;
   private readonly cells: HTMLElement[][];
   private readonly gobang: Gobang;
-  private readonly dispose: DisposeFunction;
 
   constructor({ container, gobang }: { container: Node; gobang: Gobang }) {
     const state = gobang.getState();
@@ -22,7 +21,6 @@ export class DOMRenderer implements Renderer {
     this.root = root;
     this.cells = cells;
     this.gobang = gobang;
-    this.dispose = gobang.subscribe(this.handleStateChanged);
 
     container.appendChild(root);
     root.addEventListener("click", this.handleClick);
@@ -34,8 +32,11 @@ export class DOMRenderer implements Renderer {
     if (parent) {
       parent.removeChild(this.root);
     }
+  }
 
-    this.dispose();
+  public handleUpdate({ x, y, status }: Cell) {
+    const element = this.cells[x][y];
+    element.className = getButtonClassName(status);
   }
 
   private handleClick = (e: MouseEvent) => {
@@ -43,11 +44,6 @@ export class DOMRenderer implements Renderer {
     if (!x || !y) return;
 
     this.gobang.updateCell(+x, +y);
-  };
-
-  private handleStateChanged = ({ x, y, status }: Cell) => {
-    const element = this.cells[x][y];
-    element.className = getButtonClassName(status);
   };
 }
 

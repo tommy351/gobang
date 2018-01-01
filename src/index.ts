@@ -2,28 +2,25 @@ import { Gobang } from "./Gobang";
 import { StatusBar } from "./StatusBar";
 import { CanvasRenderer } from "./CanvasRenderer";
 import { DOMRenderer } from "./DOMRenderer";
+import { Renderer } from "./Renderer";
+import { CellStatus, Cell } from "./Cell";
 
-const options = {
+const gobang = new Gobang({
   column: 12,
   row: 12
-};
-
-const gobang = new Gobang(options);
-const body = document.getElementsByTagName("body")[0];
-
-new StatusBar({
-  container: body,
-  gobang
 });
+const container = document.getElementsByTagName("body")[0];
+
+new StatusBar({ container, gobang });
+
+let renderer: Renderer;
 
 if (CanvasRenderer.isSupported()) {
-  new CanvasRenderer({
-    container: body,
-    gobang
-  });
+  renderer = new CanvasRenderer({ container, gobang });
 } else {
-  new DOMRenderer({
-    container: body,
-    gobang
-  });
+  renderer = new DOMRenderer({ container, gobang });
 }
+
+gobang.subscribe((cell: Cell, prevStatus: CellStatus) => {
+  renderer.handleUpdate(cell, prevStatus);
+});

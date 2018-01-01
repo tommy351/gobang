@@ -7,7 +7,6 @@ const CELL_SIZE = 36;
 export class CanvasRenderer implements Renderer {
   private readonly root: HTMLElement;
   private readonly gobang: Gobang;
-  private readonly dispose: DisposeFunction;
   private readonly context: CanvasRenderingContext2D;
 
   public static isSupported(): boolean {
@@ -22,7 +21,6 @@ export class CanvasRenderer implements Renderer {
     this.root = root;
     this.context = context;
     this.gobang = gobang;
-    this.dispose = gobang.subscribe(this.handleStateChanged);
 
     container.appendChild(this.root);
     root.addEventListener("click", this.handleClick);
@@ -34,8 +32,10 @@ export class CanvasRenderer implements Renderer {
     if (parent) {
       parent.removeChild(this.root);
     }
+  }
 
-    this.dispose();
+  public handleUpdate(cell: Cell) {
+    drawCell(this.context, cell);
   }
 
   private handleClick = (e: MouseEvent) => {
@@ -43,30 +43,6 @@ export class CanvasRenderer implements Renderer {
     const y = Math.floor((e.clientY - this.root.offsetTop) / CELL_SIZE);
 
     this.gobang.updateCell(x, y);
-  };
-
-  private handleStateChanged = ({ x, y, status }: Cell) => {
-    const ctx = this.context;
-
-    switch (status) {
-      case CellStatus.Black:
-        ctx.fillStyle = "black";
-        break;
-
-      case CellStatus.White:
-        ctx.fillStyle = "white";
-        break;
-    }
-
-    ctx.beginPath();
-    ctx.arc(
-      x * CELL_SIZE + CELL_SIZE / 2 + 1,
-      y * CELL_SIZE + CELL_SIZE / 2 + 1,
-      (CELL_SIZE - 1) / 2,
-      0,
-      Math.PI * 2
-    );
-    ctx.fill();
   };
 }
 
@@ -117,5 +93,38 @@ function createCanvas(
 
   context.restore();
 
+  // Render initial state
+  for (let x = 0; x < initialState.length; x++) {
+    for (let y = 0; y < initialState[x].length; y++) {
+      const status = initialState[x][y];
+
+      if (status) {
+        drawCell(context, { x, y, status });
+      }
+    }
+  }
+
   return { root, context };
+}
+
+function drawCell(ctx: CanvasRenderingContext2D, { x, y, status }: Cell) {
+  switch (status) {
+    case CellStatus.Black:
+      ctx.fillStyle = "black";
+      break;
+
+    case CellStatus.White:
+      ctx.fillStyle = "white";
+      break;
+  }
+
+  ctx.beginPath();
+  ctx.arc(
+    x * CELL_SIZE + CELL_SIZE / 2 + 1,
+    y * CELL_SIZE + CELL_SIZE / 2 + 1,
+    (CELL_SIZE - 1) / 2,
+    0,
+    Math.PI * 2
+  );
+  ctx.fill();
 }
