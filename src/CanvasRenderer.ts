@@ -120,11 +120,14 @@ function drawCell(ctx: CanvasRenderingContext2D, { x, y, status }: Cell) {
       break;
   }
 
+  const margin = 1;
+  const radius = (CELL_SIZE - margin) / 2;
+
   ctx.beginPath();
   ctx.arc(
-    x * CELL_SIZE + CELL_SIZE / 2 + 1,
-    y * CELL_SIZE + CELL_SIZE / 2 + 1,
-    (CELL_SIZE - 1) / 2,
+    x * CELL_SIZE + radius + margin,
+    y * CELL_SIZE + radius + margin,
+    radius,
     0,
     Math.PI * 2
   );
