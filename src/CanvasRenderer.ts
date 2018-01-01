@@ -69,7 +69,8 @@ function createCanvas(
 
   // Render horizontal lines
   const horizontalLine = new Path2D();
-  horizontalLine.rect(0, CELL_SIZE / 2, width, 1);
+  horizontalLine.moveTo(0, CELL_SIZE / 2);
+  horizontalLine.lineTo(width, CELL_SIZE / 2);
 
   context.save();
 
@@ -82,7 +83,8 @@ function createCanvas(
 
   // Render vertical lines
   const verticalLine = new Path2D();
-  verticalLine.rect(CELL_SIZE / 2, 0, 1, height);
+  verticalLine.moveTo(CELL_SIZE / 2, 0);
+  verticalLine.lineTo(CELL_SIZE / 2, height);
 
   context.save();
 
