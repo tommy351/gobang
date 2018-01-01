@@ -6,6 +6,22 @@ const HtmlWebpackHarddiskPlugin = require("html-webpack-harddisk-plugin");
 
 const DEV_MODE = process.env.NODE_ENV === "development";
 
+const plugins = [
+  new webpack.EnvironmentPlugin("NODE_ENV"),
+  new CheckerPlugin(),
+  new HtmlWebpackPlugin({
+    title: "Gobang",
+    filename: "index.html",
+    template: "templates/index.html"
+  }),
+  new HtmlWebpackHarddiskPlugin(),
+  new webpack.NamedModulesPlugin()
+];
+
+if (DEV_MODE) {
+  plugins.push(new webpack.HotModuleReplacementPlugin());
+}
+
 module.exports = {
   devtool: DEV_MODE ? "eval" : "source-map",
   entry: {
@@ -24,7 +40,7 @@ module.exports = {
   devServer: {
     contentBase: join(__dirname, "public"),
     compress: true,
-    hot: true
+    hot: DEV_MODE
   },
   module: {
     rules: [
@@ -51,16 +67,5 @@ module.exports = {
       }
     ]
   },
-  plugins: [
-    new webpack.EnvironmentPlugin("NODE_ENV"),
-    new CheckerPlugin(),
-    new HtmlWebpackPlugin({
-      title: "Gobang",
-      filename: "index.html",
-      template: "templates/index.html"
-    }),
-    new HtmlWebpackHarddiskPlugin(),
-    new webpack.NamedModulesPlugin(),
-    new webpack.HotModuleReplacementPlugin()
-  ]
+  plugins
 };
