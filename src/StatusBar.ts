@@ -1,4 +1,4 @@
-import { Gobang, DisposeFunction, State, Player } from "./Gobang";
+import { Gobang, State } from "./Gobang";
 import { CellStatus } from "./Cell";
 
 export enum RendererOption {

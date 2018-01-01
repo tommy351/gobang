@@ -1,5 +1,5 @@
 import { Renderer } from "./Renderer";
-import { Gobang, DisposeFunction } from "./Gobang";
+import { Gobang } from "./Gobang";
 import { Cell, CellMatrix, CellStatus } from "./Cell";
 
 const CELL_SIZE = 36;
