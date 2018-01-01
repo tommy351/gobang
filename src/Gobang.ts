@@ -47,6 +47,10 @@ export class Gobang {
     };
   }
 
+  public getSize(): Size {
+    return this.size;
+  }
+
   public updateCell(x: number, y: number) {
     if (this.winner) return;
 

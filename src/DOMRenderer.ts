@@ -15,18 +15,9 @@ export class DOMRenderer implements Renderer {
   private readonly gobang: Gobang;
   private readonly dispose: DisposeFunction;
 
-  constructor({
-    container,
-    column,
-    row,
-    gobang
-  }: {
-    container: Node;
-    column: number;
-    row: number;
-    gobang: Gobang;
-  }) {
+  constructor({ container, gobang }: { container: Node; gobang: Gobang }) {
     const state = gobang.getState();
+    const { column, row } = gobang.getSize();
     const { root, cells } = createElement(column, row, state.cells);
     this.root = root;
     this.cells = cells;
@@ -54,10 +45,7 @@ export class DOMRenderer implements Renderer {
     this.gobang.updateCell(+x, +y);
   };
 
-  private handleStateChanged = (
-    { x, y, status }: Cell,
-    prevStatus: CellStatus
-  ) => {
+  private handleStateChanged = ({ x, y, status }: Cell) => {
     const element = this.cells[x][y];
     element.className = getButtonClassName(status);
   };

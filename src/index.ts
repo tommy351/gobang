@@ -1,6 +1,7 @@
-import { DOMRenderer } from "./DOMRenderer";
 import { Gobang } from "./Gobang";
 import { StatusBar } from "./StatusBar";
+import { CanvasRenderer } from "./CanvasRenderer";
+import { DOMRenderer } from "./DOMRenderer";
 
 const options = {
   column: 12,
@@ -15,8 +16,14 @@ new StatusBar({
   gobang
 });
 
-new DOMRenderer({
-  ...options,
-  container: body,
-  gobang
-});
+if (CanvasRenderer.isSupported()) {
+  new CanvasRenderer({
+    container: body,
+    gobang
+  });
+} else {
+  new DOMRenderer({
+    container: body,
+    gobang
+  });
+}
